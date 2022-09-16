@@ -82,24 +82,19 @@ switch ($modx->event->name) {
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
             $cache_key= md5($_SERVER['REQUEST_URI']);
             ifMofifiedSince($cache_key);
-            $output= $modx->cacheManager->get($cache_key, $options);
-            $options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
-            $session= $modx->cacheManager->get($cache_key, $options);
             
-            if(!empty($session) ){
-                $session= unserialize($session);
-                $_SESSION['AjaxForm']= $session['AjaxForm'];
-            }
-
-            if(!empty($output) ){
-                die($output);
+            $cached= $modx->cacheManager->get($cache_key, $options);
+            
+            if(!empty($cached) ){
+                $output= unserialize($cached);
+                $_SESSION['AjaxForm']= $output['session']['AjaxForm'];
+                die($output['output']);
             }
             
             if(mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false){
                 $_SESSION['AjaxForm']= [];
             }
         }
-        
     break;
 
     
@@ -116,30 +111,23 @@ switch ($modx->event->name) {
             
             if($resource) {
                 $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
-		$cache_key= md5($_SERVER['REQUEST_URI']);
+		        $cache_key= md5($_SERVER['REQUEST_URI']);
 
-                $modx->cacheManager->set($cache_key, $modx->resource->_output, 0, $options);
-
-                $options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
                 $session= [
                     'AjaxForm'=> $_SESSION['AjaxForm'],
                 ];
-                
-                $modx->cacheManager->set($cache_key, serialize($session), 0, $options);
+
+                $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
             }
         }
-        
     break;
 
     case 'OnSiteRefresh':
-	shell_exec('pkill -9 -f wget');
+        shell_exec('pkill -9 -f wget');
     
     	$options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
     	$modx->cacheManager->clean($options);
-    	
-    	$options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
-    	$modx->cacheManager->clean($options);
 
-	shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
+        shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
     break;
 }
