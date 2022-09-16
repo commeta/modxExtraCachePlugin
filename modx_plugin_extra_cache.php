@@ -56,10 +56,10 @@ if(!function_exists('notModified')) {
 
 if(!function_exists('ifMofifiedSince')) { 
     function ifMofifiedSince($cache_key){
-    	$cached_file= MODX_CORE_PATH."cache/front_cache/".$cache_key.".cache.php";
+    	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
     		
     	if(file_exists($cached_file)){
-    	  clearstatcache();
+		clearstatcache();
     		$LastModified_unix= filemtime($cached_file);
     		notModified($LastModified_unix);
     	} else {
@@ -81,16 +81,15 @@ switch ($modx->event->name) {
             $modx->context->get('key') != 'mgr' &&
             !$modx->user->hasSessionContext('mgr')
         ){
-            $options= [xPDO::OPT_CACHE_KEY=>'front_cache'];
+            $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
             $cache_key= md5($_SERVER['REQUEST_URI']);
             ifMofifiedSince($cache_key);
             $output= $modx->cacheManager->get($cache_key, $options);
-            $options= [xPDO::OPT_CACHE_KEY=>'session_cache'];
+            $options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
             $session= $modx->cacheManager->get($cache_key, $options);
             
             if(!empty($session) ){
                 $session= unserialize($session);
-                
                 $_SESSION['AjaxForm']= $session['AjaxForm'];
             }
 
@@ -120,7 +119,7 @@ switch ($modx->event->name) {
             else $resource= true;
             
             if($resource) {
-                $options= [xPDO::OPT_CACHE_KEY=>'front_cache'];
+                $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
 		$cache_key= md5($_SERVER['REQUEST_URI']);
 
                 $modx->cacheManager->set($cache_key, preg_replace([ "|(<!--.*?-->)|s", '|\s+|'], ' ', $modx->resource->_output), 0, $options);
@@ -139,10 +138,10 @@ switch ($modx->event->name) {
     case 'OnSiteRefresh':
 	shell_exec('pkill -9 -f wget');
     
-    	$options= [xPDO::OPT_CACHE_KEY=>'front_cache'];
+    	$options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
     	$modx->cacheManager->clean($options);
     	
-    	$options= [xPDO::OPT_CACHE_KEY=>'session_cache'];
+    	$options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
     	$modx->cacheManager->clean($options);
 
 	shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
