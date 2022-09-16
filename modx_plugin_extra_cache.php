@@ -78,7 +78,6 @@ switch ($modx->event->name) {
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
             mb_stripos($_SERVER['REQUEST_URI'], '404') === false &&
-            !$_SESSION['minishop2']['cart'] &&
             $modx->context->get('key') != 'mgr' &&
             !$modx->user->hasSessionContext('mgr')
         ){
@@ -110,11 +109,9 @@ switch ($modx->event->name) {
     case 'OnWebPagePrerender':
         if(
             mb_stripos($_SERVER['REQUEST_URI'], '?') === false &&
-            mb_stripos($_SERVER['REQUEST_URI'], 'manager') === false &&
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
             mb_stripos($_SERVER['REQUEST_URI'], '404') === false &&
-            !$_SESSION['minishop2']['cart'] &&
             mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false &&
             $modx->context->get('key') != 'mgr' &&
             !$modx->user->hasSessionContext('mgr')
@@ -124,7 +121,7 @@ switch ($modx->event->name) {
             
             if($resource) {
                 $options= [xPDO::OPT_CACHE_KEY=>'front_cache'];
-				        $cache_key= md5($_SERVER['REQUEST_URI']);
+		$cache_key= md5($_SERVER['REQUEST_URI']);
 
                 $modx->cacheManager->set($cache_key, preg_replace([ "|(<!--.*?-->)|s", '|\s+|'], ' ', $modx->resource->_output), 0, $options);
 
@@ -140,7 +137,7 @@ switch ($modx->event->name) {
     break;
 
     case 'OnSiteRefresh':
-      shell_exec('pkill -9 -f wget');
+	shell_exec('pkill -9 -f wget');
     
     	$options= [xPDO::OPT_CACHE_KEY=>'front_cache'];
     	$modx->cacheManager->clean($options);
@@ -148,7 +145,6 @@ switch ($modx->event->name) {
     	$options= [xPDO::OPT_CACHE_KEY=>'session_cache'];
     	$modx->cacheManager->clean($options);
 
-      shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
+	shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
     break;
-
 }
