@@ -10,9 +10,8 @@
  *   OnMODXInit
  *   OnWebPagePrerender
  *   OnSiteRefresh
- *   OnSiteRefresh 
  *   OnDocFormSave
- *
+ * 
  * https://github.com/commeta/modxExtraCachePlugin
  * https://webdevops.ru/blog/extra-cache-plugin-modx.html
  * 
@@ -112,7 +111,7 @@ switch ($modx->event->name) {
             
             if($resource) {
                 $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
-		        $cache_key= md5($_SERVER['REQUEST_URI']);
+                $cache_key= md5($_SERVER['REQUEST_URI']);
 
                 $session= [
                     'AjaxForm'=> $_SESSION['AjaxForm'],
