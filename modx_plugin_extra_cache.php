@@ -74,10 +74,8 @@ if(!function_exists('ifMofifiedSince')) {
 switch ($modx->event->name) {
     case 'OnMODXInit':
         if(
-            mb_stripos($_SERVER['REQUEST_URI'], '?') === false &&
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
-            mb_stripos($_SERVER['REQUEST_URI'], '404') === false &&
             $modx->context->get('key') != 'mgr' &&
             !$modx->user->hasSessionContext('mgr')
         ){
@@ -107,10 +105,8 @@ switch ($modx->event->name) {
     
     case 'OnWebPagePrerender':
         if(
-            mb_stripos($_SERVER['REQUEST_URI'], '?') === false &&
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
-            mb_stripos($_SERVER['REQUEST_URI'], '404') === false &&
             mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false &&
             $modx->context->get('key') != 'mgr' &&
             !$modx->user->hasSessionContext('mgr')
@@ -122,7 +118,7 @@ switch ($modx->event->name) {
                 $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
 		$cache_key= md5($_SERVER['REQUEST_URI']);
 
-                $modx->cacheManager->set($cache_key, preg_replace([ "|(<!--.*?-->)|s", '|\s+|'], ' ', $modx->resource->_output), 0, $options);
+                $modx->cacheManager->set($cache_key, $modx->resource->_output, 0, $options);
 
                 $options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
                 $session= [
