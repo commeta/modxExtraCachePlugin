@@ -124,7 +124,7 @@ switch ($modx->event->name) {
 
                 $modx->cacheManager->set($cache_key, preg_replace([ "|(<!--.*?-->)|s", '|\s+|'], ' ', $modx->resource->_output), 0, $options);
 
-                $options= [xPDO::OPT_CACHE_KEY=>'session_cache'];
+                $options= [xPDO::OPT_CACHE_KEY=>'extra_session_cache'];
                 $session= [
                     'AjaxForm'=> $_SESSION['AjaxForm'],
                 ];
