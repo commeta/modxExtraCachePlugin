@@ -1,6 +1,7 @@
 # modxExtraCachePlugin
 Plugin for MODX Revo, increase server response time 
 
+
 ### Результаты тестирования:
 Тестовый стенд: 
 + Centos 8
