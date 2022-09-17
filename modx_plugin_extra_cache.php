@@ -36,7 +36,7 @@
  */
 
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
-$enable_cached_version_for_uri_parameters= true; // set false for Disable keep cached page on any get parameters
+$ignore_url_get_parameters= true; // set false for Disable keep cached page on any get parameters
 
 $session_keys= [ // Include session keys
 	'AjaxForm',
@@ -91,7 +91,7 @@ switch ($modx->event->name) {
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
 
-            if($enable_cached_version_for_uri_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+            if($ignore_url_get_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
             else $cache_key= md5($_SERVER['REQUEST_URI']);
 
             ifMofifiedSince($cache_key);
@@ -117,7 +117,7 @@ switch ($modx->event->name) {
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
             
-            if($enable_cached_version_for_uri_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+            if($ignore_url_get_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
             else $cache_key= md5($_SERVER['REQUEST_URI']);
             
             $session= [];
