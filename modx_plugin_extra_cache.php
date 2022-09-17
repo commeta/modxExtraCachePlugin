@@ -140,7 +140,7 @@ switch ($modx->event->name) {
 
     case 'OnDocFormSave':
         $url= str_ireplace(['http://', 'https://', MODX_HTTP_HOST], '', $modx->makeUrl($id));
-        if($url != '/') $url= substr($url, 1);
+        if($url != '/') $url= mb_substr($url, 1);
 
         $cache_key= md5($url);
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
@@ -151,5 +151,4 @@ switch ($modx->event->name) {
             shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
     	}
     break;
-    
 }
