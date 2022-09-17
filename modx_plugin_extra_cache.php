@@ -114,18 +114,13 @@ switch ($modx->event->name) {
             $modx->context->get('key') != 'mgr' &&
             (!$modx->user->hasSessionContext('mgr') && $enable_cache_for_logged_user)
         ){
-            if($uri= substr(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), 1)) $resource= $modx->getObject('modResource', ['uri' => $uri], false); // ID!~!!
-            else $resource= true;
-            
-            if($resource) {
-                $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
-                $cache_key= md5($_SERVER['REQUEST_URI']);
+            $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
+            $cache_key= md5($_SERVER['REQUEST_URI']);
 
-                $session= [];
-                foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
+            $session= [];
+            foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
 
-                $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
-            }
+            $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
         }
     break;
 
