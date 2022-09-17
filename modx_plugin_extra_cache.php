@@ -36,12 +36,12 @@
  */
 
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
-$enable_cached_version_for_uri_parameters= true;
+$enable_cached_version_for_uri_parameters= true; // set false for Disable keep cached page on any get parameters
 
 $session_keys= [ // Include session keys
 	'AjaxForm',
-	'mSearch2',
-	'minishop2',
+	//'mSearch2',
+	//'minishop2',
 ];
 
 
@@ -123,7 +123,7 @@ switch ($modx->event->name) {
             $session= [];
             foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
 
-            $modx->cacheManager->set($cache_key, serialize(['url'=>parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), 'output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
+            $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
         }
     break;
 
