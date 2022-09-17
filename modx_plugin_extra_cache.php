@@ -69,8 +69,7 @@ if(!function_exists('ifMofifiedSince')) {
     function ifMofifiedSince($cache_key){
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
     		
-    	if(file_exists($cached_file)){
-    		$LastModified_unix= @filemtime($cached_file);
+    	if(file_exists($cached_file) && $LastModified_unix= @filemtime($cached_file)){
     		notModified($LastModified_unix);
     	} else {
         	header('Cache-Control: public, max-age=3600, must-revalidate');
