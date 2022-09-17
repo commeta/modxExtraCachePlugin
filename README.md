@@ -5,8 +5,8 @@ Plugin for MODX Revo, increase server response time
 ### Результаты тестирования:
 Тестовый стенд: 
 + Centos 8
-+ Фронтэнд NGINX: gzip = Off
-+ Бэкэнд: Apache2, PHP установлен как модуль Apache
++ Фронтэнд: NGINX/1.22.0 gzip = Off
++ Бэкэнд: Apache/2.4.6 mpm-itk/2.4.7-04 mod_fcgid/2.3.9
 + 1 ядро: Intel(R) Xeon(R) CPU E5645 @ 2.40GHz
 + 1024MB RAM
 + PHP 7.4.3 with Zend OPcache
