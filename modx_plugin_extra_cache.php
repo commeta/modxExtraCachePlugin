@@ -94,7 +94,7 @@ switch ($modx->event->name) {
             
             $cached= $modx->cacheManager->get($cache_key, $options);
             
-            if(!empty($cached) ){
+            if(!empty($cached)){
                 $output= unserialize($cached);
                 foreach($session_keys as $sk) $_SESSION[$sk]= $output['session'][$sk];
                 die($output['output']);
@@ -109,9 +109,7 @@ switch ($modx->event->name) {
         if(
             mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false &&
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-            strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
-            $modx->context->get('key') != 'mgr' &&
-            (!$modx->user->hasSessionContext('mgr') && $enable_cache_for_logged_user)
+            strtolower($_SERVER['REQUEST_METHOD']) == 'get'
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
             $cache_key= md5($_SERVER['REQUEST_URI']);
