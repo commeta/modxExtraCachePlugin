@@ -36,6 +36,7 @@
  */
 
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
+$enable_cached_version_for_uri_parameters= true;
 
 $session_keys= [ // Include session keys
 	'AjaxForm',
@@ -89,7 +90,10 @@ switch ($modx->event->name) {
             (!$modx->user->hasSessionContext('mgr') && $enable_cache_for_logged_user)
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
-            $cache_key= md5($_SERVER['REQUEST_URI']);
+
+            if($enable_cached_version_for_uri_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+            else $cache_key= md5($_SERVER['REQUEST_URI']);
+
             ifMofifiedSince($cache_key);
             
             $cached= $modx->cacheManager->get($cache_key, $options);
@@ -112,12 +116,14 @@ switch ($modx->event->name) {
             strtolower($_SERVER['REQUEST_METHOD']) == 'get'
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
-            $cache_key= md5($_SERVER['REQUEST_URI']);
-
+            
+            if($enable_cached_version_for_uri_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+            else $cache_key= md5($_SERVER['REQUEST_URI']);
+            
             $session= [];
             foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
 
-            $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
+            $modx->cacheManager->set($cache_key, serialize(['url'=>parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), 'output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
         }
     break;
 
@@ -133,7 +139,9 @@ switch ($modx->event->name) {
     
 
     case 'OnDocFormSave':
-        $url= str_ireplace('https://'.MODX_HTTP_HOST, '', $modx->makeUrl($id));
+        $url= str_ireplace(['http://', 'https://', MODX_HTTP_HOST], '', $modx->makeUrl($id));
+        if($url != '/') $url= substr($url, 1);
+
         $cache_key= md5($url);
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
 
