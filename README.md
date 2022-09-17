@@ -9,7 +9,7 @@ Plugin for MODX Revo, increase server response time
 + Бэкэнд: Apache2, PHP установлен как модуль Apache
 + 1 ядро: Intel(R) Xeon(R) CPU E5645 @ 2.40GHz
 + 1024MB RAM
-+ PHP 7.4.4 with Zend OPcache
++ PHP 7.4.3 with Zend OPcache
 + MODX Revo 2.8.4-pl: modxExtraCachePlugin
 
 Генерация одной страницы, до попадания в кэш:
