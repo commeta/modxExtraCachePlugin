@@ -35,6 +35,16 @@
  * 
  */
 
+$enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
+
+$session_keys= [ // Include session keys
+	'AjaxForm',
+	'mSearch2',
+	'minishop2',
+];
+
+
+
 if(!function_exists('notModified')) { 
     function notModified($LastModified_unix){ // If modified since check and print 304 header
     	$LastModified = gmdate("D, d M Y H:i:s \G\M\T", $LastModified_unix);
@@ -77,7 +87,7 @@ switch ($modx->event->name) {
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
             $modx->context->get('key') != 'mgr' &&
-            !$modx->user->hasSessionContext('mgr')
+            (!$modx->user->hasSessionContext('mgr') && $enable_cache_for_logged_user)
         ){
             $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
             $cache_key= md5($_SERVER['REQUEST_URI']);
@@ -87,24 +97,22 @@ switch ($modx->event->name) {
             
             if(!empty($cached) ){
                 $output= unserialize($cached);
-                $_SESSION['AjaxForm']= $output['session']['AjaxForm'];
+                foreach($session_keys as $sk) $_SESSION[$sk]= $output['session'][$sk];
                 die($output['output']);
             }
-            
-            if(mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false){
-                $_SESSION['AjaxForm']= [];
-            }
+
+            if(mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false) foreach($session_keys as $sk) $_SESSION[$sk]= [];
         }
     break;
 
     
     case 'OnWebPagePrerender':
         if(
+            mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false &&
             empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
             strtolower($_SERVER['REQUEST_METHOD']) == 'get' &&
-            mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false &&
             $modx->context->get('key') != 'mgr' &&
-            !$modx->user->hasSessionContext('mgr')
+            (!$modx->user->hasSessionContext('mgr') && $enable_cache_for_logged_user)
         ){
             if($uri= substr(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), 1)) $resource= $modx->getObject('modResource', ['uri' => $uri], false); // ID!~!!
             else $resource= true;
@@ -113,9 +121,8 @@ switch ($modx->event->name) {
                 $options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
                 $cache_key= md5($_SERVER['REQUEST_URI']);
 
-                $session= [
-                    'AjaxForm'=> $_SESSION['AjaxForm'],
-                ];
+                $session= [];
+                foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
 
                 $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
             }
@@ -146,4 +153,3 @@ switch ($modx->event->name) {
     break;
     
 }
-
