@@ -1,4 +1,4 @@
-# [Кэширующий плагин MODX Revo для уменьшения времени генерации страниц](https://webdevops.ru/blog/extra-cache-plugin-modx.html)
+# [Кэширующий плагин MODX Revo, для уменьшения времени генерации страниц](https://webdevops.ru/blog/extra-cache-plugin-modx.html)
 
 
 ### Результаты тестирования:
