@@ -37,7 +37,7 @@
 
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
 $ignore_url_get_parameters= true; // set false for Disable keep cached page on any get parameters
-$expires= 3600; // Expires HTTP header, time after which the response is considered expired
+$expires= 3600; // Expires and max-age HTTP header, time after which the response is considered expired
 
 $erase_session_keys= true; // set false for Disable erase session keys between requests
 $session_keys= [ // Include session keys
@@ -49,7 +49,7 @@ $session_keys= [ // Include session keys
 
 
 if(!function_exists('notModified')) { 
-    function notModified($LastModified_unix){ // If modified since check and print 304 header
+    function notModified($LastModified_unix, $expires= 3600){ // If modified since check and print 304 header
     	$LastModified = gmdate("D, d M Y H:i:s \G\M\T", $LastModified_unix);
     	$IfModifiedSince = false;
     	
@@ -62,21 +62,21 @@ if(!function_exists('notModified')) {
     		exit;
     	}
     	
-    	header('Cache-Control: public, max-age='.$GLOBALS["expires"].', must-revalidate');
-    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $GLOBALS["expires"]).' GMT');
+    	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
+    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
     	header('Last-Modified: '.$LastModified);
     }
 }
 
 if(!function_exists('ifMofifiedSince')) { 
-    function ifMofifiedSince($cache_key){
+    function ifMofifiedSince($cache_key, $expires= 3600){
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
     		
     	if(file_exists($cached_file) && $LastModified_unix= @filemtime($cached_file)){
-    		notModified($LastModified_unix);
+    		notModified($LastModified_unix, $expires);
     	} else {
-        	header('Cache-Control: public, max-age='.$GLOBALS["expires"].', must-revalidate');
-        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $GLOBALS["expires"]).' GMT');
+        	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
+        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
         	header('Last-Modified: '.gmdate('D, d M Y H:i:s', time()).' GMT');
     	}
     }
@@ -96,7 +96,7 @@ switch ($modx->event->name) {
             if($ignore_url_get_parameters) $cache_key= md5(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
             else $cache_key= md5($_SERVER['REQUEST_URI']);
 
-            ifMofifiedSince($cache_key);
+            ifMofifiedSince($cache_key, $expires);
             
             $cached= $modx->cacheManager->get($cache_key, $options);
             
