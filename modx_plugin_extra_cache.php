@@ -37,6 +37,7 @@
 
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
 $ignore_url_get_parameters= true; // set false for Disable keep cached page on any get parameters
+$expires= 3600; // Expires HTTP header, time after which the response is considered expired
 
 $erase_session_keys= true; // set false for Disable erase session keys between requests
 $session_keys= [ // Include session keys
@@ -61,8 +62,8 @@ if(!function_exists('notModified')) {
     		exit;
     	}
     	
-    	header('Cache-Control: public, max-age=3600, must-revalidate');
-    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 3600).' GMT');
+    	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
+    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
     	header('Last-Modified: '.$LastModified);
     }
 }
@@ -74,8 +75,8 @@ if(!function_exists('ifMofifiedSince')) {
     	if(file_exists($cached_file) && $LastModified_unix= @filemtime($cached_file)){
     		notModified($LastModified_unix);
     	} else {
-        	header('Cache-Control: public, max-age=3600, must-revalidate');
-        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 3600).' GMT');
+        	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
+        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
         	header('Last-Modified: '.gmdate('D, d M Y H:i:s', time()).' GMT');
     	}
     }
