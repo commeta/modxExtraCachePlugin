@@ -62,8 +62,8 @@ if(!function_exists('notModified')) {
     		exit;
     	}
     	
-    	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
-    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
+    	header('Cache-Control: public, max-age='.$GLOBALS["expires"].', must-revalidate');
+    	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $GLOBALS["expires"]).' GMT');
     	header('Last-Modified: '.$LastModified);
     }
 }
@@ -75,8 +75,8 @@ if(!function_exists('ifMofifiedSince')) {
     	if(file_exists($cached_file) && $LastModified_unix= @filemtime($cached_file)){
     		notModified($LastModified_unix);
     	} else {
-        	header('Cache-Control: public, max-age='.$expires.', must-revalidate');
-        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
+        	header('Cache-Control: public, max-age='.$GLOBALS["expires"].', must-revalidate');
+        	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $GLOBALS["expires"]).' GMT');
         	header('Last-Modified: '.gmdate('D, d M Y H:i:s', time()).' GMT');
     	}
     }
