@@ -49,7 +49,7 @@ $session_keys= [ // Include session keys
 
 
 if(!function_exists('notModified')) { 
-    function notModified($LastModified_unix, $expires= 3600){ // If modified since check and print 304 header
+    function notModified($LastModified_unix, $expires){ // If modified since check and print 304 header
     	$LastModified = gmdate("D, d M Y H:i:s \G\M\T", $LastModified_unix);
     	$IfModifiedSince = false;
     	
@@ -69,7 +69,7 @@ if(!function_exists('notModified')) {
 }
 
 if(!function_exists('ifMofifiedSince')) { 
-    function ifMofifiedSince($cache_key, $expires= 3600){
+    function ifMofifiedSince($cache_key, $expires){
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
     		
     	if(file_exists($cached_file) && $LastModified_unix= @filemtime($cached_file)){
