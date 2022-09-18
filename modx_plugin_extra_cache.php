@@ -38,6 +38,7 @@
 $enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
 $ignore_url_get_parameters= true; // set false for Disable keep cached page on any get parameters
 
+$erase_session_keys= true; // set false for Disable erase session keys between requests
 $session_keys= [ // Include session keys
 	'AjaxForm',
 	//'mSearch2',
@@ -104,7 +105,7 @@ switch ($modx->event->name) {
                 die($output['output']);
             }
 
-            if(mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false) foreach($session_keys as $sk) $_SESSION[$sk]= [];
+            if($erase_session_keys && mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false) foreach($session_keys as $sk) $_SESSION[$sk]= [];
         }
     break;
 
