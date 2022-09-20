@@ -142,7 +142,6 @@ switch ($modx->event->name) {
 
     case 'OnDocFormSave':
         $url= str_ireplace(['http://', 'https://', MODX_HTTP_HOST], '', $modx->makeUrl($id));
-        if($url != '/') $url= mb_substr($url, 1);
 
         $cache_key= md5($url);
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
