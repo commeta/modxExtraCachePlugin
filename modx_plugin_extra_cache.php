@@ -44,6 +44,7 @@ $session_keys= [ // Include session keys
 	'AjaxForm',
 	//'mSearch2',
 	//'minishop2',
+	//'mspc',
 ];
 
 
@@ -106,7 +107,9 @@ switch ($modx->event->name) {
                 die($output['output']);
             }
 
-            if($erase_session_keys && mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false) foreach($session_keys as $sk) $_SESSION[$sk]= [];
+            if($erase_session_keys && mb_stripos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false) {
+                foreach($session_keys as $sk) $_SESSION[$sk]= [];
+            }
         }
     break;
 
@@ -125,7 +128,12 @@ switch ($modx->event->name) {
             $session= [];
             foreach($session_keys as $sk) $session[$sk]= $_SESSION[$sk];
 
-            $modx->cacheManager->set($cache_key, serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 0, $options);
+            $modx->cacheManager->set(
+                $cache_key, 
+                serialize(['output'=>$modx->resource->_output, 'session'=>$session]), 
+                0, 
+                $options
+            );
         }
     break;
 
@@ -136,7 +144,7 @@ switch ($modx->event->name) {
     	$options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
     	$modx->cacheManager->clean($options);
 
-        shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
+        shell_exec('wget -r -nc -nd -l 7 --spider -q -b https://'.MODX_HTTP_HOST.'/');
     break;
     
 
@@ -147,9 +155,8 @@ switch ($modx->event->name) {
     	$cached_file= MODX_CORE_PATH."cache/extra_cache/".$cache_key.".cache.php";
 
     	if(file_exists($cached_file)){
-            shell_exec('pkill -9 -f wget');
     	    unlink($cached_file);
-            shell_exec('wget -r -l 7 -p -nc -nd --spider -q --reject=png,jpg,jpeg,ico,xml,txt,ttf,woff,woff2,pdf,eot,gif,svg,mp3,ogg,mpeg,avi,zip,gz,bz2,rar,swf,otf,webp,js,css https://'.MODX_HTTP_HOST.'/ >/dev/null 2>/dev/null &');
+        	shell_exec('wget -nc -nd --delete-after -q -b https://'.MODX_HTTP_HOST.$url);
     	}
     break;
 }
