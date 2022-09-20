@@ -156,7 +156,7 @@ switch ($modx->event->name) {
 
     	if(file_exists($cached_file)){
     	    unlink($cached_file);
-        	shell_exec('wget -nc -nd --delete-after -q -b https://'.MODX_HTTP_HOST.$url);
+            shell_exec('wget -nc -nd --delete-after -q -b https://'.MODX_HTTP_HOST.$url);
     	}
     break;
 }
