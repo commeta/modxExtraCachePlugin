@@ -35,7 +35,7 @@
  * 
  */
 
-$enable_cache_for_logged_user= true; // set false for Disable caching for logged manager user !!!
+$enable_cache_for_logged_user= true; // set false for Enable caching for logged manager user !!!
 $ignore_url_get_parameters= true; // set false for Disable keep cached page on any get parameters
 $expires= 3600; // Expires and max-age HTTP header, time after which the response is considered expired
 
