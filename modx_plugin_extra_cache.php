@@ -144,7 +144,7 @@ switch ($modx->event->name) {
     	$options= [xPDO::OPT_CACHE_KEY=>'extra_cache'];
     	$modx->cacheManager->clean($options);
 
-        shell_exec('wget -r -nc -nd -l 7 --spider -q -b https://'.MODX_HTTP_HOST.'/');
+        shell_exec('wget--no-check-certificate  -r -nc -nd -l 7 --spider -q -b https://'.MODX_HTTP_HOST.'/');
     break;
     
 
@@ -156,7 +156,7 @@ switch ($modx->event->name) {
 
     	if(file_exists($cached_file)){
     	    unlink($cached_file);
-            shell_exec('wget -nc -nd --delete-after -q -b https://'.MODX_HTTP_HOST.$url);
+            shell_exec('wget --no-check-certificate -nc -nd --delete-after -q -b https://'.MODX_HTTP_HOST.$url);
     	}
     break;
 }
